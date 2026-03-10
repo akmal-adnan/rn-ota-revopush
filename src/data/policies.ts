@@ -9,7 +9,7 @@ import {
 
 export const mockUser: UserProfile = {
   id: 'USR-123456',
-  firstName: 'Akmal',
+  firstName: 'Jane',
   lastName: 'Doe',
   email: 'jane.doe@example.com',
   phone: '(555) 123-4567',

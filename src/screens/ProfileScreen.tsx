@@ -1,4 +1,3 @@
-import codePush from '@revopush/react-native-code-push';
 import {
   Bell,
   CreditCard,
@@ -7,40 +6,29 @@ import {
   RefreshCw,
   Settings,
 } from 'lucide-react-native';
-import React, {useState} from 'react';
-import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {InfoCard} from '../components/ui/InfoCard';
 import {ListRow} from '../components/ui/ListRow';
 import {PrimaryButton} from '../components/ui/PrimaryButton';
 import {ScreenContainer} from '../components/ui/ScreenContainer';
+import {UpdateRequiredModal} from '../components/ui/UpdateRequiredModal';
 import {COLORS, RADIUS, SPACING, TYPOGRAPHY} from '../constants/theme';
 import {mockUser} from '../data/policies';
+import {useUpdateCheck} from '../hooks/useUpdateCheck';
 
 export const ProfileScreen = () => {
-  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
-
-  const handleCheckForUpdate = async () => {
-    if (isCheckingUpdate) {
-      return;
-    }
-    setIsCheckingUpdate(true);
-    try {
-      await codePush.sync({
-        installMode: codePush.InstallMode.IMMEDIATE,
-        mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
-      });
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Failed to check for updates';
-      Alert.alert('Update Check Failed', message);
-    } finally {
-      setIsCheckingUpdate(false);
-    }
-  };
+  const {isUpdateAvailable, isLoading, handleRestartApp, checkForUpdate} =
+    useUpdateCheck();
 
   return (
     <ScreenContainer>
+      <UpdateRequiredModal
+        visible={isUpdateAvailable}
+        onRestartPress={handleRestartApp}
+        isLoading={isLoading}
+      />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
@@ -81,8 +69,8 @@ export const ProfileScreen = () => {
             <ListRow
               icon={<RefreshCw color={COLORS.textMuted} size={24} />}
               title="Check for Updates"
-              subtitle={isCheckingUpdate ? 'Checking...' : 'Tap to check'}
-              onPress={handleCheckForUpdate}
+              subtitle={isLoading ? 'Checking...' : 'Tap to check'}
+              onPress={checkForUpdate}
               hideBorder
             />
           </InfoCard>

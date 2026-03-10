@@ -18,6 +18,9 @@ import {
   View,
 } from 'react-native';
 
+import {UpdateRequiredModal} from '../components/ui/UpdateRequiredModal';
+import {useUpdateCheck} from '../hooks/useUpdateCheck';
+
 import {ActivityRow} from '../components/ui/ActivityRow';
 import {InfoCard} from '../components/ui/InfoCard';
 import {PrimaryButton} from '../components/ui/PrimaryButton';
@@ -37,6 +40,7 @@ interface Props {
 }
 
 export const HomeScreen: React.FC<Props> = ({navigation}) => {
+  const {isUpdateAvailable, isLoading, handleRestartApp} = useUpdateCheck();
   const nextPaymentPolicy = mockPolicies[0]; // Just picking first for demo
 
   const getGreeting = () => {
@@ -69,16 +73,19 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <ScreenContainer>
+      <UpdateRequiredModal
+        visible={isUpdateAvailable}
+        onRestartPress={handleRestartApp}
+        isLoading={isLoading}
+      />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         {/* Welcome Block */}
         <View style={styles.headerBlock}>
           <Text style={styles.greeting}>{getGreeting()}</Text>
-          <Text style={styles.name}>{mockUser.firstName}</Text>
-
-          <Text style={styles.greeting}>
-            Member since {mockUser.memberSince}
+          <Text style={styles.name}>
+            {mockUser.firstName} {mockUser.lastName}
           </Text>
         </View>
 
