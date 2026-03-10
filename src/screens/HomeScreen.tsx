@@ -76,6 +76,10 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
         <View style={styles.headerBlock}>
           <Text style={styles.greeting}>{getGreeting()}</Text>
           <Text style={styles.name}>{mockUser.firstName}</Text>
+
+          <Text style={styles.greeting}>
+            Member since {mockUser.memberSince}
+          </Text>
         </View>
 
         {/* Hero Card: Quick Overview */}
@@ -103,6 +107,12 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
               <Text style={styles.statLabel}>Next Renewal</Text>
             </View>
           </View>
+          <PrimaryButton
+            label="Get a Quote"
+            variant="secondary"
+            onPress={() => navigation.navigate('GetQuote')}
+            style={styles.quoteButton}
+          />
         </View>
 
         {/* Policy Summary Chips */}
@@ -176,11 +186,11 @@ export const HomeScreen: React.FC<Props> = ({navigation}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.actionItem}
-            onPress={() => console.log('Contact')}>
+            onPress={() => navigation.navigate('GetQuote')}>
             <View style={styles.actionIconContainer}>
               <PhoneCall color={COLORS.primary} size={24} />
             </View>
-            <Text style={styles.actionText}>Claims</Text>
+            <Text style={styles.actionText}>Get Quote</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.actionItem}
@@ -273,6 +283,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.2)',
     paddingTop: SPACING.md,
+  },
+  quoteButton: {
+    marginTop: SPACING.md,
   },
   statContainer: {
     flex: 1,

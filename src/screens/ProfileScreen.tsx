@@ -1,24 +1,46 @@
+import codePush from '@revopush/react-native-code-push';
 import {
   Bell,
   CreditCard,
   HelpCircle,
+  LogOut,
+  RefreshCw,
   Settings,
-  ShieldCheck,
 } from 'lucide-react-native';
-import React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 
+import {InfoCard} from '../components/ui/InfoCard';
 import {ListRow} from '../components/ui/ListRow';
 import {PrimaryButton} from '../components/ui/PrimaryButton';
 import {ScreenContainer} from '../components/ui/ScreenContainer';
-import {TopHeader} from '../components/ui/TopHeader';
 import {COLORS, RADIUS, SPACING, TYPOGRAPHY} from '../constants/theme';
 import {mockUser} from '../data/policies';
 
 export const ProfileScreen = () => {
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+
+  const handleCheckForUpdate = async () => {
+    if (isCheckingUpdate) {
+      return;
+    }
+    setIsCheckingUpdate(true);
+    try {
+      await codePush.sync({
+        installMode: codePush.InstallMode.IMMEDIATE,
+        mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
+      });
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to check for updates';
+      Alert.alert('Update Check Failed', message);
+    } finally {
+      setIsCheckingUpdate(false);
+    }
+  };
+
   return (
-    <ScreenContainer useSafeArea={false}>
-      <TopHeader title="My Profile" />
+    <ScreenContainer>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
@@ -34,51 +56,58 @@ export const ProfileScreen = () => {
             {mockUser.firstName} {mockUser.lastName}
           </Text>
           <Text style={styles.email}>{mockUser.email}</Text>
-
-          <View style={styles.badge}>
-            <ShieldCheck color={COLORS.primary} size={16} />
-            <Text style={styles.badgeText}>
-              Member since {new Date(mockUser.memberSince).getFullYear()}
-            </Text>
-          </View>
         </View>
 
         {/* Settings Sections */}
-        <Text style={styles.sectionTitle}>Account & Settings</Text>
-        <View style={styles.groupContainer}>
-          <ListRow
-            icon={<CreditCard color={COLORS.textMuted} size={24} />}
-            title="Payment Methods"
-            onPress={() => {}}
-          />
-          <ListRow
-            icon={<Bell color={COLORS.textMuted} size={24} />}
-            title="Notifications"
-            subtitle="Email, Push, SMS"
-            onPress={() => {}}
-          />
-          <ListRow
-            icon={<Settings color={COLORS.textMuted} size={24} />}
-            title="Personal Details"
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Account & Settings</Text>
+          <InfoCard>
+            <ListRow
+              icon={<CreditCard color={COLORS.textMuted} size={24} />}
+              title="Payment Methods"
+              onPress={() => {}}
+            />
+            <ListRow
+              icon={<Bell color={COLORS.textMuted} size={24} />}
+              title="Notifications"
+              subtitle="Email, Push, SMS"
+              onPress={() => {}}
+            />
+            <ListRow
+              icon={<Settings color={COLORS.textMuted} size={24} />}
+              title="Personal Details"
+              onPress={() => {}}
+            />
+            <ListRow
+              icon={<RefreshCw color={COLORS.textMuted} size={24} />}
+              title="Check for Updates"
+              subtitle={isCheckingUpdate ? 'Checking...' : 'Tap to check'}
+              onPress={handleCheckForUpdate}
+              hideBorder
+            />
+          </InfoCard>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Support</Text>
+          <InfoCard>
+            <ListRow
+              icon={<HelpCircle color={COLORS.textMuted} size={24} />}
+              title="Help Center"
+              onPress={() => {}}
+              hideBorder
+            />
+          </InfoCard>
+        </View>
+
+        <View style={styles.logoutContainer}>
+          <PrimaryButton
+            variant="danger"
+            label="Log Out"
+            icon={<LogOut size={18} color={COLORS.white} />}
             onPress={() => {}}
           />
         </View>
-
-        <Text style={styles.sectionTitle}>Support</Text>
-        <View style={styles.groupContainer}>
-          <ListRow
-            icon={<HelpCircle color={COLORS.textMuted} size={24} />}
-            title="Help Center"
-            onPress={() => {}}
-          />
-        </View>
-
-        <PrimaryButton
-          variant="outline"
-          label="Log Out"
-          onPress={() => {}}
-          style={styles.logoutButton}
-        />
       </ScrollView>
     </ScreenContainer>
   );
@@ -90,70 +119,49 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     alignItems: 'center',
-    paddingVertical: SPACING.xl,
+    paddingTop: SPACING.xxl,
+    paddingBottom: SPACING.xl,
     paddingHorizontal: SPACING.lg,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-    marginBottom: SPACING.lg,
+    backgroundColor: COLORS.primaryLight,
   },
   avatarContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.primaryLight,
+    width: 96,
+    height: 96,
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.md,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
   },
   initials: {
-    fontSize: TYPOGRAPHY.sizes.xl,
-    fontWeight: TYPOGRAPHY.weights.bold,
+    ...TYPOGRAPHY.headings.h3,
     color: COLORS.primary,
   },
   name: {
-    fontSize: TYPOGRAPHY.sizes.lg,
-    fontWeight: TYPOGRAPHY.weights.bold,
+    ...TYPOGRAPHY.headings.h4,
     color: COLORS.text,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   email: {
-    fontSize: TYPOGRAPHY.sizes.md,
+    ...TYPOGRAPHY.body.md,
     color: COLORS.textMuted,
     marginBottom: SPACING.md,
   },
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.background,
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.xs,
-    borderRadius: RADIUS.round,
-  },
-  badgeText: {
-    fontSize: TYPOGRAPHY.sizes.sm,
-    color: COLORS.text,
-    marginLeft: 6,
-    fontWeight: TYPOGRAPHY.weights.medium,
-  },
-  sectionTitle: {
-    fontSize: TYPOGRAPHY.sizes.md,
-    fontWeight: TYPOGRAPHY.weights.bold,
-    color: COLORS.textMuted,
-    marginLeft: SPACING.lg,
-    marginBottom: SPACING.sm,
-    marginTop: SPACING.md,
-  },
-  groupContainer: {
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: COLORS.border,
+  section: {
+    paddingHorizontal: SPACING.lg,
+    marginTop: SPACING.lg,
     marginBottom: SPACING.lg,
   },
-  logoutButton: {
-    marginHorizontal: SPACING.lg,
-    marginTop: SPACING.xl,
-    borderColor: COLORS.error,
+  sectionTitle: {
+    ...TYPOGRAPHY.body.lg,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
+  },
+  logoutContainer: {
+    paddingHorizontal: SPACING.lg,
+    marginTop: SPACING.lg,
   },
 });

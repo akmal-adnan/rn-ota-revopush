@@ -8,7 +8,6 @@ import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {InfoCard} from '../components/ui/InfoCard';
 import {ScreenContainer} from '../components/ui/ScreenContainer';
 import {StatPill} from '../components/ui/StatPill';
-import {TopHeader} from '../components/ui/TopHeader';
 import {COLORS, SPACING, TYPOGRAPHY} from '../constants/theme';
 import {mockPolicies} from '../data/policies';
 import {RootStackParamList, TabsParamList} from '../navigations/AppNavigator';
@@ -62,8 +61,7 @@ export const PoliciesScreen: React.FC<Props> = ({navigation}) => {
   );
 
   return (
-    <ScreenContainer useSafeArea={false}>
-      <TopHeader title="My Policies" />
+    <ScreenContainer>
       <FlatList
         data={mockPolicies}
         keyExtractor={item => item.id}

@@ -1,68 +1,56 @@
 import {ChevronLeft} from 'lucide-react-native';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {COLORS, SPACING, TYPOGRAPHY} from '../../constants/theme';
 
 interface TopHeaderProps {
   title: string;
   onBack?: () => void;
-  rightAction?: React.ReactNode;
 }
 
-export const TopHeader: React.FC<TopHeaderProps> = ({
-  title,
-  onBack,
-  rightAction,
-}) => {
+export const TopHeader: React.FC<TopHeaderProps> = ({title, onBack}) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
-      {onBack ? (
+    <View style={{...styles.container, paddingTop: insets.top}}>
+      {onBack && (
         <TouchableOpacity style={styles.actionButton} onPress={onBack}>
-          <ChevronLeft color={COLORS.text} size={24} />
+          <ChevronLeft color={COLORS.text} size={34} />
         </TouchableOpacity>
-      ) : (
-        <View style={styles.placeholder} />
       )}
 
       <Text style={styles.title} numberOfLines={1}>
         {title}
       </Text>
 
-      {rightAction ? (
-        <View style={styles.actionButton}>{rightAction}</View>
-      ) : (
-        <View style={styles.placeholder} />
-      )}
+      <View style={{width: 34}} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    display: 'flex',
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.surface,
     borderBottomWidth: 1,
+    backgroundColor: COLORS.surface,
     borderBottomColor: COLORS.border,
   },
+
   title: {
     fontSize: TYPOGRAPHY.sizes.lg,
     fontWeight: TYPOGRAPHY.weights.semiBold,
     color: COLORS.text,
-    flex: 1,
     textAlign: 'center',
   },
+
   actionButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  placeholder: {
-    width: 40,
-    height: 40,
+    left: -6,
+    backgroundColor: 'red,',
   },
 });

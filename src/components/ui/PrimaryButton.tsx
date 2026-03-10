@@ -1,13 +1,20 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, ViewStyle} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import {COLORS, RADIUS, SPACING, TYPOGRAPHY} from '../../constants/theme';
 
 interface PrimaryButtonProps {
   label: string;
   onPress: () => void;
   style?: ViewStyle;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
 export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
@@ -16,6 +23,7 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   style,
   variant = 'primary',
   disabled = false,
+  icon,
 }) => {
   const getContainerStyle = () => {
     switch (variant) {
@@ -23,6 +31,8 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
         return styles.secondaryContainer;
       case 'outline':
         return styles.outlineContainer;
+      case 'danger':
+        return styles.dangerContainer;
       default:
         return styles.primaryContainer;
     }
@@ -34,6 +44,8 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
         return styles.secondaryText;
       case 'outline':
         return styles.outlineText;
+      case 'danger':
+        return styles.dangerText;
       default:
         return styles.primaryText;
     }
@@ -50,9 +62,12 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.8}>
-      <Text style={[getTextStyle(), disabled && styles.disabledText]}>
-        {label}
-      </Text>
+      <View style={styles.content}>
+        {icon && <View style={styles.icon}>{icon}</View>}
+        <Text style={[getTextStyle(), disabled && styles.disabledText]}>
+          {label}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -65,6 +80,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: SPACING.sm,
+  },
   primaryContainer: {
     backgroundColor: COLORS.primary,
   },
@@ -75,6 +97,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: COLORS.border,
+  },
+  dangerContainer: {
+    backgroundColor: COLORS.error,
   },
   disabledContainer: {
     backgroundColor: COLORS.border,
@@ -94,6 +119,11 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: TYPOGRAPHY.sizes.md,
     fontWeight: TYPOGRAPHY.weights.semiBold,
+  },
+  dangerText: {
+    color: COLORS.white,
+    fontSize: TYPOGRAPHY.sizes.md,
+    fontWeight: TYPOGRAPHY.weights.bold,
   },
   disabledText: {
     color: COLORS.textMuted,

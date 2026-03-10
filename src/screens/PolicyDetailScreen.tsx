@@ -7,7 +7,6 @@ import {InfoCard} from '../components/ui/InfoCard';
 import {PrimaryButton} from '../components/ui/PrimaryButton';
 import {ScreenContainer} from '../components/ui/ScreenContainer';
 import {StatPill} from '../components/ui/StatPill';
-import {TopHeader} from '../components/ui/TopHeader';
 import {COLORS, SPACING, TYPOGRAPHY} from '../constants/theme';
 import {mockPolicies} from '../data/policies';
 import {RootStackParamList} from '../navigations/AppNavigator';
@@ -23,14 +22,12 @@ interface Props {
   navigation: PolicyDetailNavigationProp;
 }
 
-export const PolicyDetailScreen: React.FC<Props> = ({route, navigation}) => {
+export const PolicyDetailScreen: React.FC<Props> = ({route}) => {
   const {policyId} = route.params;
   const policy = mockPolicies.find(p => p.id === policyId) || mockPolicies[0];
 
   return (
     <ScreenContainer useSafeArea={false}>
-      <TopHeader title="Policy Details" onBack={() => navigation.goBack()} />
-
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
@@ -90,9 +87,6 @@ export const PolicyDetailScreen: React.FC<Props> = ({route, navigation}) => {
             </React.Fragment>
           ))}
         </InfoCard>
-
-        {/* Action Bottom */}
-        <View style={{height: 40}} />
       </ScrollView>
     </ScreenContainer>
   );

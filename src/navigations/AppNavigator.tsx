@@ -3,15 +3,21 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Home, Shield, User} from 'lucide-react-native';
 import React from 'react';
 
+import {TopHeader} from '../components/ui/TopHeader';
 import {COLORS} from '../constants/theme';
+import {GetQuoteScreen} from '../screens/GetQuoteScreen';
 import {HomeScreen} from '../screens/HomeScreen';
 import {PoliciesScreen} from '../screens/PoliciesScreen';
 import {PolicyDetailScreen} from '../screens/PolicyDetailScreen';
 import {ProfileScreen} from '../screens/ProfileScreen';
+import {QuoteResultsScreen} from '../screens/QuoteResultsScreen';
+import {QuoteProduct} from '../types/insurance';
 
 export type RootStackParamList = {
   MainTabs: undefined;
   PolicyDetail: {policyId: string};
+  GetQuote: {productType?: QuoteProduct} | undefined;
+  QuoteResults: {productType: QuoteProduct; applicantName: string};
 };
 
 export type TabsParamList = {
@@ -22,6 +28,23 @@ export type TabsParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabsParamList>();
+
+const getTitleFromRoute = (routeName: string): string => {
+  const titles: Record<string, string> = {
+    MainTabs: 'Home',
+    PolicyDetail: 'Policy Details',
+    GetQuote: 'Get a Quote',
+    QuoteResults: 'Quote Results',
+  };
+  return titles[routeName] || routeName;
+};
+
+const StackHeader = ({navigation, route}: {navigation: any; route: any}) => (
+  <TopHeader
+    title={getTitleFromRoute(route.name)}
+    onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+  />
+);
 
 const TabNavigator = () => {
   return (
@@ -62,13 +85,32 @@ const TabNavigator = () => {
 
 export const AppNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="MainTabs" component={TabNavigator} />
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{headerShown: false}}
+        name="MainTabs"
+        component={TabNavigator}
+      />
       <Stack.Screen
         name="PolicyDetail"
         component={PolicyDetailScreen}
         options={{
-          presentation: 'modal', // Example: give a modal feel
+          header: StackHeader,
+        }}
+      />
+      <Stack.Screen
+        name="QuoteResults"
+        component={QuoteResultsScreen}
+        options={{
+          header: StackHeader,
+        }}
+      />
+
+      <Stack.Screen
+        name="GetQuote"
+        component={GetQuoteScreen}
+        options={{
+          header: StackHeader,
         }}
       />
     </Stack.Navigator>

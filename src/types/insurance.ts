@@ -41,3 +41,32 @@ export interface ActivityItem {
   description: string;
   date: string;
 }
+
+export type QuoteProduct = 'Auto' | 'Health' | 'Life';
+
+export interface QuoteDraft {
+  id: string;
+  productType: QuoteProduct;
+  fullName: string;
+  email: string;
+  phone: string;
+  zipCode: string;
+  age?: string;
+  vehicleYear?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+  annualIncome?: string;
+  smoker?: 'yes' | 'no';
+  hasDependents?: 'yes' | 'no';
+  updatedAt: string;
+}
+
+export interface QuotePlan {
+  id: string;
+  productType: QuoteProduct;
+  name: string;
+  monthlyPremium: number;
+  deductible: number;
+  highlights: string[];
+  recommended?: boolean;
+}

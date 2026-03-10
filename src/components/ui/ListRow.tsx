@@ -9,6 +9,7 @@ interface ListRowProps {
   subtitle?: string;
   onPress?: () => void;
   showChevron?: boolean;
+  hideBorder?: boolean;
 }
 
 export const ListRow: React.FC<ListRowProps> = ({
@@ -17,12 +18,13 @@ export const ListRow: React.FC<ListRowProps> = ({
   subtitle,
   onPress,
   showChevron = true,
+  hideBorder = false,
 }) => {
   const Container = onPress ? TouchableOpacity : View;
 
   return (
     <Container
-      style={styles.container}
+      style={[styles.container, hideBorder && styles.noBorder]}
       {...(onPress && {onPress, activeOpacity: 0.7})}>
       <View style={styles.leftContent}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
@@ -48,6 +50,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+  },
+  noBorder: {
+    borderBottomWidth: 0,
   },
   leftContent: {
     flexDirection: 'row',

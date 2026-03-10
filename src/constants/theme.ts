@@ -4,6 +4,7 @@ export const COLORS = {
   secondary: '#008080', // Teal accent
   background: '#F8FAFC', // Very light grey-blue
   surface: '#FFFFFF',
+  white: '#FFFFFF',
   text: '#0F172A',
   textMuted: '#64748B',
   border: '#E2E8F0',
@@ -29,6 +30,7 @@ export const RADIUS = {
   md: 12,
   lg: 16,
   xl: 24,
+  full: 9999,
   round: 9999,
 };
 
@@ -46,6 +48,42 @@ export const TYPOGRAPHY = {
     medium: '500' as const,
     semiBold: '600' as const,
     bold: '700' as const,
+  },
+  headings: {
+    h1: {
+      fontSize: 32,
+      fontWeight: '700' as const,
+    },
+    h2: {
+      fontSize: 24,
+      fontWeight: '700' as const,
+    },
+    h3: {
+      fontSize: 20,
+      fontWeight: '600' as const,
+    },
+    h4: {
+      fontSize: 18,
+      fontWeight: '600' as const,
+    },
+  },
+  body: {
+    lg: {
+      fontSize: 18,
+      fontWeight: '400' as const,
+    },
+    md: {
+      fontSize: 16,
+      fontWeight: '400' as const,
+    },
+    sm: {
+      fontSize: 14,
+      fontWeight: '400' as const,
+    },
+    xs: {
+      fontSize: 12,
+      fontWeight: '400' as const,
+    },
   },
 };
 
